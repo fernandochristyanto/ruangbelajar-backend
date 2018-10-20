@@ -17,7 +17,7 @@ module.exports.registerRoutes = function (app) {
 
     app.use('/api/user',
         Route.routes([
-            Route.get('/', userHandler.get),
+            Route.post('/login', userHandler.get),
             Route.post('/', userHandler.register)
         ]))
 
