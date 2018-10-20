@@ -16,8 +16,8 @@ async function get(req, res, next) {
   }
 }
 
-async function getUserDetail(userId) {
-  switch (user.role) {
+async function getUserDetail(userId, role) {
+  switch (role) {
     case "teacher":
       return await db.TrTeacherDetail.findOne({ userId: userId })
     case "student":
