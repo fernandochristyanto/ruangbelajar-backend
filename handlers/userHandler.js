@@ -2,7 +2,9 @@ const db = require('../model')
 
 module.exports = {
   get,
-  register
+  register,
+  getAllByRole,
+  getById
 }
 async function get(req, res, next) {
   const user = await db.TrUser.findOne({ email: req.body.email, password: req.body.password })
@@ -11,8 +13,46 @@ async function get(req, res, next) {
     res.status(204)
   }
   else {
-    const userDetail = await getUserDetail(user.id, user.role)
+    let userDetail = await getUserDetail(user.id, user.role)
+    userDetail = userDetail.toObject()
+    userDetail.id = user.id
     res.json(userDetail).send()
+  }
+}
+
+async function getById(req, res, next) {
+  const { userId } = req.params
+  const user = await db.TrUser.findById(userId)
+  switch (user.role) {
+    case "student":
+      const studentDetail = await db.TrStudentDetail.findOne({ userId: userId })
+      res.json(studentDetail).send()
+      break;
+    case "teacher":
+      const teacherDetail = await db.TrTeacherDetail.findOne({ userId: userId })
+      res.json(teacherDetail).send()
+      break;
+  }
+}
+
+async function getAllByRole(req, res, next) {
+  const { role } = req.query
+  try {
+    switch (role) {
+      case "teacher":
+        const teachers = await db.TrTeacherDetail.find({})
+        res.json(teachers).send()
+        break;
+      case "student":
+        const students = await db.TrStudentDetail.find({})
+        res.json(students).send()
+        break;
+      default:
+        res.status(204).send()
+    }
+  }
+  catch (ex) {
+    next(ex.message)
   }
 }
 

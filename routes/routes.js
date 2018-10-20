@@ -2,7 +2,8 @@ const db = require('../model/index');
 
 //IMPORT HANDLERS
 const seedHandler = require('../handlers/seedHandler');
-const userHandler = require('../handlers/userHandler')
+const userHandler = require('../handlers/userHandler');
+const coursePlaceHandler = require('../handlers/coursePlaceHandler');
 
 module.exports.registerRoutes = function (app) {
     /**
@@ -18,10 +19,17 @@ module.exports.registerRoutes = function (app) {
     app.use('/api/user',
         Route.routes([
             Route.post('/login', userHandler.get),
-            Route.post('/', userHandler.register)
+            Route.post('/', userHandler.register),
+            Route.get('/getAllByRole', userHandler.getAllByRole),
+            Route.get('/:userId', userHandler.getById)
         ]))
 
-    
+    app.use('/api/coursePlace',
+        Route.routes([
+            Route.get('/', coursePlaceHandler.getAll),
+            Route.post('/', coursePlaceHandler.addNewCoursePlace),
+            Route.get('/:coursePlaceId', coursePlaceHandler.getById)
+        ]))
 }
 
 class Route {
