@@ -18,7 +18,7 @@ async function get(req, res, next) {
     userDetail.id = user.id
     res.json(userDetail).send()
   }
-}
+} 
 
 async function getById(req, res, next) {
   const { userId } = req.params

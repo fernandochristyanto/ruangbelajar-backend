@@ -25,7 +25,7 @@ const trCoursePlace = new mongoose.Schema({
       type: Number
     },
     maxSalary: {
-      type: String
+      type: Number
     },
     interestedTeachers: [{
       type: mongoose.Schema.Types.ObjectId,
