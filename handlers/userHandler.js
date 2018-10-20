@@ -1,7 +1,8 @@
 const db = require('../model')
 
 module.exports = {
-  get
+  get,
+  register
 }
 async function get(req, res, next) {
   const user = await db.TrUser.findOne({ email: req.body.email, password: req.body.password })
