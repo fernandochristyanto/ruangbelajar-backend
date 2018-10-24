@@ -16,22 +16,27 @@ async function get(req, res, next) {
     let userDetail = await getUserDetail(user.id, user.role)
     userDetail = userDetail.toObject()
     userDetail.id = user.id
+    userDetail.role = user.role
     res.json(userDetail).send()
   }
-} 
+}
 
 async function getById(req, res, next) {
   const { userId } = req.params
-  const user = await db.TrUser.findById(userId)
-  switch (user.role) {
-    case "student":
-      const studentDetail = await db.TrStudentDetail.findOne({ userId: userId })
-      res.json(studentDetail).send()
-      break;
-    case "teacher":
-      const teacherDetail = await db.TrTeacherDetail.findOne({ userId: userId })
-      res.json(teacherDetail).send()
-      break;
+  try {
+    const user = await db.TrUser.findById(userId)
+    if (!user)
+      next({
+        message: 'Invalid id',
+        status: 400
+      })
+    const detail = await getUserDetail(user.id, user.role);
+    const returnJson = detail.toObject()
+    returnJson.email = user.email
+    res.status(200).json(returnJson).send()
+  }
+  catch (ex) {
+    next(ex)
   }
 }
 
@@ -60,14 +65,24 @@ async function getUserDetail(userId, role) {
   switch (role) {
     case "teacher":
       return await db.TrTeacherDetail.findOne({ userId: userId })
+        .populate("pendingCoursePlaces")
+        .populate("ongoingCoursePlaces")
+        .populate("rejectedCoursePlaces")
+        .populate("onprogressCoursePlaces")
+
     case "student":
       return await db.TrStudentDetail.findOne({ userId: userId })
+        .populate("ongoingCoursePlaces")
+        .populate("pendingCoursePlaces")
+    case "admin":
+      return await db.TrAdminDetail.findOne({ userId: userId })
+        .populate("TrCoursePlace")
   }
 }
 
 async function register(req, res, next) {
   const {
-    name, phone, education, role, email, password
+    name, phone, education, role, email, password, courseplaceId
   } = req.body
 
   try {
@@ -99,6 +114,19 @@ async function register(req, res, next) {
           education: education
         })
         break;
+      case "admin":
+        const admin = await db.TrUser.create({
+          email: email,
+          password: password,
+          role: "admin"
+        })
+
+        await db.TrAdminDetail.create({
+          userId: admin.id,
+          name: name,
+          phone: phone,
+          courseplaceId: courseplaceId
+        })
     }
     res.status(200).send()
   }

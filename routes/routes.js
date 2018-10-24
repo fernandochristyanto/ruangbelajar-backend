@@ -28,7 +28,10 @@ module.exports.registerRoutes = function (app) {
         Route.routes([
             Route.get('/', coursePlaceHandler.getAll),
             Route.post('/', coursePlaceHandler.addNewCoursePlace),
-            Route.get('/:coursePlaceId', coursePlaceHandler.getById)
+            Route.get('/:coursePlaceId', coursePlaceHandler.getById),
+            Route.post('/apply', coursePlaceHandler.applyToCourseplace),
+            Route.post('/approveTeacher', coursePlaceHandler.approveTeacherFromRegistrants),
+            Route.post('/rejectTeacher', coursePlaceHandler.rejectTeacherFromRegistrants),
         ]))
 }
 

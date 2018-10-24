@@ -11,5 +11,6 @@ module.exports = {
   TrCoursePlace: require('./trCoursePlace'),
   TrStudentDetail: require('./trStudentDetail'),
   TrTeacherDetail: require('./trTeacherDetail'),
-  TrUser: require('./trUser')
+  TrUser: require('./trUser'),
+  TrAdminDetail: require('./trAdminDetail')
 }

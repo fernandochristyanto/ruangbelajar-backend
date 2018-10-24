@@ -7,6 +7,9 @@ const trTeacherDetail = new mongoose.Schema({
   phone: {
     type: String
   },
+  description: {
+    type: String
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'TrUser',
